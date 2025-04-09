@@ -5,7 +5,9 @@ import { clerkClient } from "@clerk/clerk-sdk-node";
 declare global {
   namespace Express {
     interface Request {
+      clerkToken?: string;
       userId?: string;
+      clerkId?: string;
       user?: {
         email: string;
       };
@@ -19,86 +21,73 @@ export async function authMiddleware(
   next: NextFunction
 ) {
   try {
-    const authHeader = req.headers["authorization"];
-    const token = authHeader?.split(" ")[1];
+    // Extract token from query, header, or cookies
+    const queryParams = new URLSearchParams(req.url.split("?")[1]);
+    const tokenFromQuery = queryParams.get("token");
+    const tokenFromHeader = req.headers.authorization?.replace("Bearer ", "");
+    const tokenFromCookie = req.cookies?.clerkToken;
 
-    if (!token) {
-      res.status(401).json({ message: "No token provided" });
-      return;
-    }
+    const token = tokenFromQuery || tokenFromHeader || tokenFromCookie || "";
 
-    // Debug logs
-    console.log("Received token:", token);
+    console.log("Received Clerk token:", token);
 
-    // Get the JWT verification key from environment variable
-    const publicKey = process.env.CLERK_JWT_PUBLIC_KEY!;
-
-    console.log("puvllic ", publicKey);
-    
-
+    const publicKey = process.env.CLERK_JWT_PUBLIC_KEY;
     if (!publicKey) {
-      console.error("Missing CLERK_JWT_PUBLIC_KEY in environment variables");
+      console.error("Missing CLERK_JWT_PUBLIC_KEY");
       res.status(500).json({ message: "Server configuration error" });
       return;
     }
 
-    // Format the public key properly
     const formattedKey = publicKey.replace(/\\n/g, "\n");
 
     const decoded = jwt.verify(token, formattedKey, {
       algorithms: ["RS256"],
-      issuer:
-        process.env.CLERK_ISSUER || "https://clerk.100xdevs.com",
-      complete: true,
-    });
+      issuer: process.env.CLERK_ISSUER || "https://clerk.example.com", // Update as needed
+    }) as jwt.JwtPayload;
 
-    console.log("Decoded token:", decoded);
+    console.log("Decoded JWT:", decoded);
 
-    // Extract user ID from the decoded token
-    const userId = (decoded as any).payload.sub;
+    const userId = decoded.sub;
 
     if (!userId) {
-      console.error("No user ID in token payload");
-      res.status(403).json({ message: "Invalid token payload" });
+      res.status(403).json({ message: "Invalid token payload: Missing sub" });
       return;
     }
 
-    // Fetch user details from Clerk
+    // Fetch Clerk user details
     const user = await clerkClient.users.getUser(userId);
     const primaryEmail = user.emailAddresses.find(
       (email) => email.id === user.primaryEmailAddressId
     );
 
     if (!primaryEmail) {
-      console.error("No email found for user");
       res.status(400).json({ message: "User email not found" });
       return;
     }
 
-    // Attach the user ID and email to the request
+    // Attach values to request object
+    req.clerkToken = token;
     req.userId = userId;
+    req.clerkId = userId;
     req.user = {
       email: primaryEmail.emailAddress,
     };
 
     next();
   } catch (error) {
-    console.error("Auth error:", error);
+    console.error("Authentication Error:", error);
+
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(403).json({
-        message: "Invalid token",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
+        message: "Invalid or expired token",
+        details: process.env.NODE_ENV === "development" ? error.message : undefined,
       });
       return;
     }
+
     res.status(500).json({
-      message: "Error processing authentication",
-      details:
-        process.env.NODE_ENV === "development"
-          ? (error as Error).message
-          : undefined,
+      message: "Internal auth processing error",
+      details: process.env.NODE_ENV === "development" ? (error as Error).message : undefined,
     });
-    return;
   }
 }

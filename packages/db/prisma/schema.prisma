@@ -14,28 +14,43 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  clerkUserId   String   @unique
-  email         String   @unique
-  name          String?
-  image         String?
-
-  twitterAccount TwitterAccount?
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-model TwitterAccount {
-  id               String   @id @default(cuid())
-  user             User     @relation(fields: [userId], references: [id])
-  userId           String   @unique
-
-  twitterUserId    String   @unique
-  screenName       String
-  accessToken      String
-  refreshToken     String?
+  id          String  @default(cuid())
+  clerkUserId String  @id @unique
+  email       String  @unique
+  name        String?
+  image       String?
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  twitterAccountId String?
+
+  // twitterAccount     TwitterAccount[]
+  // TwitterAuthSession TwitterAuthSession[]
+}
+
+model TwitterAccount {
+  id           String  @id @default(cuid())
+  twitterId    String  @unique
+  username     String
+  name         String?
+  profileImage String?
+  accessToken  String
+  refreshToken String?
+  expiresAt    Int
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // User        User?    @relation(fields: [clerkUserId], references: [clerkUserId])
+  clerkUserId String?
+}
+
+model TwitterAuthSession {
+  id           String   @id @default(uuid())
+  codeVerifier String
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+
+  // Foreign key to User
+  clerkUserId  String @unique
+  // User        User?  @relation(fields: [clerkUserId], references: [clerkUserId])
 }

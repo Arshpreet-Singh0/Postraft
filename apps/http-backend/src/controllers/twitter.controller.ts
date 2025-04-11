@@ -139,17 +139,28 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
 
     const {name, username, id} = userInfo.data.data;
 
-    await prisma.twitterAccount.create({
-      data : {
-        clerkUserId : state,
-        twitterId : id,
+    await prisma.twitterAccount.upsert({
+      where: {
+        clerkUserId : state
+      },
+      update: {
+        clerkUserId: state,
         username,
         name,
-        accessToken : access_token,
-        refreshToken : refresh_token,
-        expiresAt : expires_in,
-      }
-    })
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresAt: expires_in,
+      },
+      create: {
+        clerkUserId: state,
+        twitterId: id,
+        username,
+        name,
+        accessToken: access_token,
+        refreshToken: refresh_token,
+        expiresAt: expires_in,
+      },
+    });
 
     const twitterUser = userInfo.data;
 
@@ -158,14 +169,29 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
 
     console.log("✅ Twitter User:", twitterUser);
 
-    res.status(200).json({
-      message: "Twitter auth successful!",
-      twitterUser,
-      access_token,
-      refresh_token,
-    });
+    res.redirect("http://localhost:3000");
   } catch (error: any) {
     console.error("Twitter callback error:", error.response?.data || error.message);
     res.status(500).send("Twitter callback failed");
   }
 };
+
+export const getUserLinkedAccounts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const accounts = await prisma.twitterAccount.findMany({
+      where : {
+        clerkUserId : req.clerkId,
+      },
+      select : {
+        name : true,
+        username : true,
+        twitterId : true,
+        expiresAt : true
+      }
+    })
+
+    res.status(200).json(accounts);
+  } catch (error) {
+    next(error);
+  }
+}

@@ -9,6 +9,7 @@ import { clerkMiddleware } from '@clerk/express'
 dotenv.config();
 
 import twitterRouter from "./routes/twitter.route";
+import contentRouter from "./routes/content.route";
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -24,7 +25,8 @@ app.use(cors({
 app.use(express.json());
 
 //api's
-app.use('/api/v1', twitterRouter)
+app.use('/api/v1', twitterRouter);
+app.use('/api/v1', contentRouter);
 
 app.post('/' ,(req, res)=>{
   console.log("/////");

@@ -6,63 +6,66 @@ import { useAuth } from "@clerk/nextjs";
 import { signIn, useSession } from "next-auth/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { HeroSection } from "@/components/home/HeroSection";
+import HowItWorks from "@/components/home/HowItWorks";
+import { Pricing } from "@/components/home/Pricing";
 
 export default function TwitterConnectButton() {
-  const [accounts, setAccounts] = useState<{name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
-  const {data : session } = useSession();
-  const { getToken } = useAuth();
-  const [text, setText] = useState("");
-  const [msg, setMsg] = useState("");
-  const handleConnect = async () => {
+  // const [accounts, setAccounts] = useState<{name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
+  // const {data : session } = useSession();
+  // const { getToken } = useAuth();
+  // const [text, setText] = useState("");
+  // const [msg, setMsg] = useState("");
+  // const handleConnect = async () => {
     
-    const token = await getToken(); // from @clerk/nextjs
+  //   const token = await getToken(); // from @clerk/nextjs
 
-    window.location.href = `${BACKEND_URL}/api/v1/twitter/login?token=${token}`;
+  //   window.location.href = `${BACKEND_URL}/api/v1/twitter/login?token=${token}`;
 
 
-  };
+  // };
 
-  useEffect(()=>{
-    const getAccounts = async()=>{
-      const token = await getToken();
-      if(!token) return;
-      try {
-        const res = await axios.get(`${BACKEND_URL}/api/v1/twitter/linked-accounts`,{
-          headers : {
-            Authorization :  `Bearer ${token}`
-          }
-        });
+  // useEffect(()=>{
+  //   const getAccounts = async()=>{
+  //     const token = await getToken();
+  //     if(!token) return;
+  //     try {
+  //       const res = await axios.get(`${BACKEND_URL}/api/v1/twitter/linked-accounts`,{
+  //         headers : {
+  //           Authorization :  `Bearer ${token}`
+  //         }
+  //       });
 
-        setAccounts(res?.data);
-      } catch (error) {
-        console.log(error);
+  //       setAccounts(res?.data);
+  //     } catch (error) {
+  //       console.log(error);
         
-      }
-    };
-    getAccounts();
-  },[]);
+  //     }
+  //   };
+  //   getAccounts();
+  // },[]);
 
-  const handlePost = async()=>{
-    if(!text) return;
-    const token = await getToken();
-    try {
-      const res = await axios.post(`${BACKEND_URL}/api/v1/twitter/post`, {text}, {
-        headers : {
-          Authorization : `Bearer ${token}`
-        }
-      });
+  // const handlePost = async()=>{
+  //   if(!text) return;
+  //   const token = await getToken();
+  //   try {
+  //     const res = await axios.post(`${BACKEND_URL}/api/v1/twitter/post`, {text}, {
+  //       headers : {
+  //         Authorization : `Bearer ${token}`
+  //       }
+  //     });
 
-      console.log(res);
+  //     console.log(res);
       
 
-      setMsg(res?.data?.message);
-    } catch (error) {
-      console.log(error);
+  //     setMsg(res?.data?.message);
+  //   } catch (error) {
+  //     console.log(error);
       
-    }
-  }
+  //   }
+  // }
   return (
-    <div >
+    <>
     {/* <p className="text-center text-2xl font-bold mb-4">
       {session?.user ? <>
       "Connected to Twitter"
@@ -98,6 +101,10 @@ export default function TwitterConnectButton() {
         }
     </div> */}
 
-    </div>
+    <HeroSection />
+    <HowItWorks />
+    <Pricing />
+
+    </>
   );
 }

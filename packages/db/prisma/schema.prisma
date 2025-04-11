@@ -30,7 +30,7 @@ model User {
 
 model TwitterAccount {
   id           String  @id @default(cuid())
-  twitterId    String  @unique
+  twitterId    String
   username     String
   name         String?
   profileImage String?
@@ -41,7 +41,7 @@ model TwitterAccount {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   // User        User?    @relation(fields: [clerkUserId], references: [clerkUserId])
-  clerkUserId String?
+  clerkUserId String   @unique
 }
 
 model TwitterAuthSession {

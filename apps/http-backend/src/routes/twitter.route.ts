@@ -1,12 +1,13 @@
 import express, { Router } from "express";
-import { twitterCallback, twitterLogin } from "../controllers/twitter.controller";
+import { getUserLinkedAccounts, twitterCallback, twitterLogin } from "../controllers/twitter.controller";
 import { authMiddleware } from "../middlewares/isAuthenticated";
-import { requireAuth } from "@clerk/express";
 
 const router : Router = express.Router();
 
 router.route('/twitter/login').get(authMiddleware, twitterLogin);
 
 router.route('/twitter/callback').get(twitterCallback);
+
+router.route('/twitter/linked-accounts').get(authMiddleware, getUserLinkedAccounts);
 
 export default router;

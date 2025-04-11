@@ -13,6 +13,7 @@ import SyncUser from "@/components/SyncUser";
 import { Providers } from "@/components/Providers";
 import { StarsBackground } from "@/components/ui/stars-background";
 import Navbar from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +40,7 @@ export default function RootLayout({
       <Providers>
         <html lang="en">
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black relative overflow-hidden`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black relative `}
           >
             {/* 🌌 Background stars */}
             <StarsBackground
@@ -52,7 +53,7 @@ export default function RootLayout({
             />
 
             {/* 🧱 Foreground content wrapper */}
-            <div className="relative z-10 min-h-screen flex flex-col">
+            <div className="relative z-10 flex flex-col">
               {/* 🧭 Navbar */}
               <header className="flex justify-end items-center p-4 gap-4 h-16">
                 <Navbar />
@@ -60,6 +61,10 @@ export default function RootLayout({
 
               {/* 📦 Page-specific content */}
               <main className="flex-grow">{children}</main>
+
+              <footer>
+                <Footer />
+              </footer>
             </div>
           </body>
         </html>

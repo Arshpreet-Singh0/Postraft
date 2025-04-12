@@ -14,6 +14,7 @@ import { Providers } from "@/components/Providers";
 import { StarsBackground } from "@/components/ui/stars-background";
 import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,7 +61,9 @@ export default function RootLayout({
               </header>
 
               {/* 📦 Page-specific content */}
-              <main className="flex-grow">{children}</main>
+              <main className="flex-grow">{children}
+                <Toaster richColors/>
+              </main>
 
               <footer>
                 <Footer />

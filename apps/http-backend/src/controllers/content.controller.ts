@@ -117,7 +117,7 @@ export const schedulePost = async(req : Request, res : Response, next : NextFunc
       },
     });
 
-    res.status(201).json(post);
+    res.status(201).json({message : "Post Scheduled Successfully." ,success : true});
   } catch (err) {
     res.status(500).json({ error: "Failed to schedule post" });
   }

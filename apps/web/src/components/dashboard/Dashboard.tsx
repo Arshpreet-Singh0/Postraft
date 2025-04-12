@@ -8,7 +8,7 @@ import Accounts from "./Accounts";
 const Dashboard = () => {
     const [selected, setSelected] = useState("accounts");
   return (
-    <div className="w-[75%] mx-auto  mt-10 mb-20">
+    <div className="w-[75%] mx-auto mt-10 mb-20 min-h-screen">
         <div className="flex rounded-lg gap-2 ">
             <Button className={`${selected=="accounts" ? 'bg-pink-600' : 'bg-none'} hover:bg-pink-700 cursor-pointer`} size={"default"} onClick={() => setSelected("accounts")} >
                Accounts

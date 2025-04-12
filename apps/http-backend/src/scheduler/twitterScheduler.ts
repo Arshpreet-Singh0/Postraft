@@ -16,6 +16,8 @@ export const startPostScheduler = () => {
       });
   
       for (const post of duePosts) {
+        console.log(post);
+        
         postToTwitter(post.content, post.twitterAccountId, post.clerkUserId, post.id);
       }
     });

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import axiosInstance from "@/config/axios";
 import { Twitter } from "lucide-react";
+import SchedulePostModel from "./SchedulePostModel";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState<{name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
@@ -69,8 +70,10 @@ const Accounts = () => {
                     </div>
 
                     <div className="">
-                        <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Schedule a post</Button>
+                        {/* <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Schedule a post</Button> */}
+                    <SchedulePostModel twitterId={acc.twitterId} username={acc.username}/>
                     </div>
+
                     </div>
                 ))
             ) : (

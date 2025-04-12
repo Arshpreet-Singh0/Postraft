@@ -98,3 +98,27 @@ async function refreshTwitterToken(refreshToken: string, clerkUserId: string) {
     throw new Error("Refresh token expired or invalid. Re-authentication required.");
   }
 }
+
+export const schedulePost = async(req : Request, res : Response, next : NextFunction) : Promise<void> => {
+  const { content, scheduledTime , twitterAccountId} = req.body;
+
+  if(!content || !scheduledTime || !req.clerkId || !twitterAccountId){
+    res.status(400).json({ message: "Invalid request" });
+    return;
+  }
+
+  try {
+    const post = await prisma.scheduledPost.create({
+      data: {
+        content,
+        scheduledTime: new Date(scheduledTime),
+        clerkUserId : req.clerkId,
+        twitterAccountId
+      },
+    });
+
+    res.status(201).json(post);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to schedule post" });
+  }
+};

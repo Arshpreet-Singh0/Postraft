@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express'
 
+import { startPostScheduler } from './scheduler/twitterScheduler';
+
 dotenv.config();
 
 import twitterRouter from "./routes/twitter.route";
@@ -82,6 +84,9 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     message: err.message || "Internal Server Error",
   });
 });
+
+
+startPostScheduler();
 
 app.listen(PORT, () => {
   console.log(`API server running on http://localhost:${PORT}`);

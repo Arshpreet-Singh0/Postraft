@@ -26,6 +26,7 @@ model User {
 
   // twitterAccount     TwitterAccount[]
   // TwitterAuthSession TwitterAuthSession[]
+  // ScheduledPost ScheduledPost[]
 }
 
 model TwitterAccount {
@@ -42,6 +43,8 @@ model TwitterAccount {
   updatedAt   DateTime @updatedAt
   // User        User?    @relation(fields: [clerkUserId], references: [clerkUserId])
   clerkUserId String   @unique
+
+  scheduledPosts ScheduledPost[]
 }
 
 model TwitterAuthSession {
@@ -51,6 +54,19 @@ model TwitterAuthSession {
   expiresAt    DateTime
 
   // Foreign key to User
-  clerkUserId  String @unique
+  clerkUserId String @unique
   // User        User?  @relation(fields: [clerkUserId], references: [clerkUserId])
+}
+
+model ScheduledPost {
+  id               Int      @id @default(autoincrement())
+  content          String
+  scheduledTime    DateTime
+  status           String   @default("pending") // "pending", "published"
+  createdAt        DateTime @default(now())
+  // User          User?    @relation(fields: [clerkUserId], references: [clerkUserId])
+  clerkUserId      String   @unique
+  twitterAccountId String
+
+  TwitterAccount TwitterAccount @relation(fields: [twitterAccountId], references: [id])
 }

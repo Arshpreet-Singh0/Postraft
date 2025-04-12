@@ -44,7 +44,7 @@ model TwitterAccount {
   // User        User?    @relation(fields: [clerkUserId], references: [clerkUserId])
   clerkUserId String   @unique
 
-  scheduledPosts ScheduledPost[]
+  // scheduledPosts ScheduledPost[]
 }
 
 model TwitterAuthSession {
@@ -65,8 +65,8 @@ model ScheduledPost {
   status           String   @default("pending") // "pending", "published"
   createdAt        DateTime @default(now())
   // User          User?    @relation(fields: [clerkUserId], references: [clerkUserId])
-  clerkUserId      String   @unique
+  clerkUserId      String
   twitterAccountId String
 
-  TwitterAccount TwitterAccount @relation(fields: [twitterAccountId], references: [id])
+  // TwitterAccount TwitterAccount @relation(fields: [twitterAccountId], references: [id])
 }

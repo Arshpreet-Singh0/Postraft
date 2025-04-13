@@ -36,44 +36,44 @@ app.post('/' ,(req, res)=>{
   
 })
 
-// app.get('/api/me', requireAuth(), async (req: Request, res: Response) => {
-//   const { userId } = getAuth(req);
-//   if (!userId) {
-//     res.status(401).json({ error: 'Unauthorized' });
-//     return;
-//   }
-//   console.log(userId);
+app.get('/api/me', requireAuth(), async (req: Request, res: Response) => {
+  const { userId } = getAuth(req);
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+  console.log(userId);
   
 
-//   let user = await prisma.user.findUnique({
-//     where: { clerkUserId: userId },
-//   });
+  let user = await prisma.user.findUnique({
+    where: { clerkUserId: userId },
+  });
 
-//   if (!user) {
-//     const clerkRes = await fetch(`https://api.clerk.dev/v1/users/${userId}`, {
-//       headers: {
-//         Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
-//       },
-//     });
-//     const clerkUser = await clerkRes.json();
-//     console.log(clerkUser);
+  if (!user) {
+    const clerkRes = await fetch(`https://api.clerk.dev/v1/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,
+      },
+    });
+    const clerkUser = await clerkRes.json();
+    console.log(clerkUser);
     
 
-//     user = await prisma.user.create({
-//       data: {
-//         clerkUserId: userId,
-//         email: clerkUser.email_addresses[0].email_address,
-//         name: `${clerkUser.first_name} ${clerkUser.last_name}`,
-//         image: clerkUser.image_url,
-//       },
-//     });
-//   }
+    user = await prisma.user.create({
+      data: {
+        clerkUserId: userId,
+        email: clerkUser.email_addresses[0].email_address,
+        name: `${clerkUser.first_name} ${clerkUser.last_name}`,
+        image: clerkUser.image_url,
+      },
+    });
+  }
 
-//   console.log(user);
+  console.log(user);
   
 
-//   res.json({ user });
-// });
+  res.json({ user });
+});
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);

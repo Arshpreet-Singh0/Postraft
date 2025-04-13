@@ -123,9 +123,7 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
     const userInfo : {
       data : {
         data : {
-          
             name : string, username : string, id : string
-          
         }
       }
     } = await axios.get("https://api.twitter.com/2/users/me", {
@@ -163,9 +161,6 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
     });
 
     const twitterUser = userInfo.data;
-
-    // 4. (Optional) Save access & refresh token in DB if needed
-    // await prisma.twitterUser.upsert({...})
 
     console.log("✅ Twitter User:", twitterUser);
 

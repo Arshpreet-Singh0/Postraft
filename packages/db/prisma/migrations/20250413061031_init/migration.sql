@@ -24,7 +24,7 @@ CREATE TABLE "TwitterAccount" (
     "expiresAt" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "clerkUserId" TEXT,
+    "clerkUserId" TEXT NOT NULL,
 
     CONSTRAINT "TwitterAccount_pkey" PRIMARY KEY ("id")
 );
@@ -40,6 +40,19 @@ CREATE TABLE "TwitterAuthSession" (
     CONSTRAINT "TwitterAuthSession_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "ScheduledPost" (
+    "id" SERIAL NOT NULL,
+    "content" TEXT NOT NULL,
+    "scheduledTime" TIMESTAMP(3) NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "clerkUserId" TEXT NOT NULL,
+    "twitterAccountId" TEXT NOT NULL,
+
+    CONSTRAINT "ScheduledPost_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_clerkUserId_key" ON "User"("clerkUserId");
 
@@ -47,7 +60,16 @@ CREATE UNIQUE INDEX "User_clerkUserId_key" ON "User"("clerkUserId");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "TwitterAccount_twitterId_key" ON "TwitterAccount"("twitterId");
+CREATE UNIQUE INDEX "TwitterAccount_clerkUserId_key" ON "TwitterAccount"("clerkUserId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "TwitterAuthSession_clerkUserId_key" ON "TwitterAuthSession"("clerkUserId");
+
+-- AddForeignKey
+ALTER TABLE "TwitterAccount" ADD CONSTRAINT "TwitterAccount_clerkUserId_fkey" FOREIGN KEY ("clerkUserId") REFERENCES "User"("clerkUserId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TwitterAuthSession" ADD CONSTRAINT "TwitterAuthSession_clerkUserId_fkey" FOREIGN KEY ("clerkUserId") REFERENCES "User"("clerkUserId") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ScheduledPost" ADD CONSTRAINT "ScheduledPost_twitterAccountId_fkey" FOREIGN KEY ("twitterAccountId") REFERENCES "TwitterAccount"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

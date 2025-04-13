@@ -119,6 +119,60 @@ export const schedulePost = async(req : Request, res : Response, next : NextFunc
 
     res.status(201).json({message : "Post Scheduled Successfully." ,success : true});
   } catch (err) {
+    console.log(err);
+    
     res.status(500).json({ error: "Failed to schedule post" });
   }
 };
+
+export const getUserScheduledPosts = async(req : Request, res : Response, next : NextFunction) : Promise<void> =>{
+  try {
+    const clerkUserId = req.clerkId;
+
+    const scheduledPosts = await prisma.scheduledPost.findMany({
+      where : {
+        clerkUserId,
+        scheduledTime : {
+          gte : new Date()
+        }
+      },
+      include : {
+        TwitterAccount : {
+          select : {
+            name : true,
+            username : true
+          }
+        }
+      }
+    });
+
+    res.status(200).json(scheduledPosts);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getPublishedPosts = async(req : Request, res : Response, next : NextFunction) : Promise<void> =>{
+  try {
+    const clerkUserId = req.clerkId;
+
+    const posts = await prisma.scheduledPost.findMany({
+      where : {
+        clerkUserId,
+        status : "published",
+      },
+      include : {
+        TwitterAccount : {
+          select : {
+            name : true,
+            username : true
+          }
+        }
+      }
+    });
+
+    res.status(200).json(posts);
+  } catch (error) {
+    next(error);
+  }
+}

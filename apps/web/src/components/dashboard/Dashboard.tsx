@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button"
 import { WandSparkles } from "lucide-react";
 import Accounts from "./Accounts";
+import PostPage from "./posts/PostPage";
 
 const Dashboard = () => {
     const [selected, setSelected] = useState("accounts");
@@ -24,9 +25,22 @@ const Dashboard = () => {
             </Button>
         </div>
 
-        <Accounts />
+        <ShowPage value={selected}/>
+
+        
     </div>
   )
 }
 
-export default Dashboard
+export default Dashboard;
+
+const ShowPage = ({value} : {
+   value : string
+}) => {
+   switch (value){
+      case "accounts" :
+         return <Accounts />
+      case "posts" : 
+         return <PostPage />
+   }
+}

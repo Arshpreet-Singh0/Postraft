@@ -1,15 +1,16 @@
 "use client";
 
+import Loading from "@/components/Loading";
 import axiosInstance from "@/config/axios";
 import { Post } from "@/types/types";
 import { handleAxiosError } from "@/utils/handleAxiosError";
 import { useAuth } from "@clerk/nextjs";
-import { UserCheck } from "lucide-react";
+import {UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const PublishedPosts = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
   useEffect(() => {
@@ -33,7 +34,9 @@ const PublishedPosts = () => {
     fetchPublishedPosts();
   }, []);
 
-  console.log(posts);
+  if(loading){
+    return <Loading />
+  }
 
   return (
     <div className="mt-10 rounded-lg text-white p-5">
@@ -46,7 +49,7 @@ const PublishedPosts = () => {
           posts.map((post, idx) => (
             <div className="bg-white/5 p-5 rounded-lg mt-4 flex" key={idx}>
               <div className="w-[80%]">
-              <h4>Post 1 : </h4>
+              <h4>Post {idx+1} : </h4>
               <p>{post.content}</p>
 
               <p className="text-sm text-zinc-400 mt-2">

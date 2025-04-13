@@ -143,6 +143,9 @@ export const getUserScheduledPosts = async(req : Request, res : Response, next :
             username : true
           }
         }
+      },
+      orderBy : {
+        scheduledTime : "asc"
       }
     });
 
@@ -168,6 +171,9 @@ export const getPublishedPosts = async(req : Request, res : Response, next : Nex
             username : true
           }
         }
+      },
+      orderBy : {
+        scheduledTime : "desc"
       }
     });
 

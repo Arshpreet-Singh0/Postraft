@@ -8,9 +8,12 @@ import axios from "axios";
 import axiosInstance from "@/config/axios";
 import { Twitter } from "lucide-react";
 import SchedulePostModel from "./SchedulePostModel";
+import { handleAxiosError } from "@/utils/handleAxiosError";
+import Loading from "../Loading";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState<{name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
+  const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
   const handleConnect = async () => {
@@ -33,13 +36,17 @@ const Accounts = () => {
         setAccounts(res?.data);
       } catch (error) {
         console.log(error);
-        
+        handleAxiosError(error);
+      }finally{
+        setLoading(false);
       }
     };
     getAccounts();
   },[]);
 
-  console.log(accounts);
+  if(loading){
+    return <Loading />;
+  }
   
   return (
     <div className="text-white mt-10">

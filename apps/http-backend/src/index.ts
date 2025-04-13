@@ -4,14 +4,13 @@ import { getAuth, requireAuth } from '@clerk/express';
 import { prisma } from '@repo/db/client';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { clerkMiddleware } from '@clerk/express'
 
 import { startPostScheduler } from './scheduler/twitterScheduler';
 
 dotenv.config();
 
 import twitterRouter from "./routes/twitter.route";
-import contentRouter from "./routes/content.route";
+import contentRouter from "./routes/post.route";
 
 const app = express();
 const PORT = process.env.PORT || 8080;

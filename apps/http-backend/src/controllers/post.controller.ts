@@ -182,3 +182,25 @@ export const getPublishedPosts = async(req : Request, res : Response, next : Nex
     next(error);
   }
 }
+
+export const deleteScheduledPost = async(req : Request, res : Response, next : NextFunction) : Promise<void> =>{
+  try {
+    const clerkkId = req.clerkId;
+    const {id : scheduledPostId } = req.params;
+
+    const deletedPost = await prisma.scheduledPost.delete({
+      where : {
+        clerkUserId : clerkkId,
+        id : Number(scheduledPostId),
+      }
+    });
+
+    if(!deletedPost){
+      throw new ExpressError( "Requested method not allowed",400);
+    }
+
+    res.status(200).json({success : true, post : deletedPost, message : "Scheduled post deleted successfully."});
+  } catch (error) {
+    next(error);
+  }
+}

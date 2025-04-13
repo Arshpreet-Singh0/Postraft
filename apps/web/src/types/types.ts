@@ -9,4 +9,5 @@ export interface Post{
     status : string;
     twitterAccountId : string;
     createdAt : Date;
+    id : string;
 }

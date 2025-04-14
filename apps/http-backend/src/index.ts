@@ -11,6 +11,7 @@ dotenv.config();
 
 import twitterRouter from "./routes/twitter.route";
 import contentRouter from "./routes/post.route";
+import aiRouter from "./routes/ai.route"
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -28,6 +29,7 @@ app.use(express.json());
 //api's
 app.use('/api/v1', twitterRouter);
 app.use('/api/v1', contentRouter);
+app.use('/api/v1', aiRouter);
 
 app.post('/' ,(req, res)=>{
   console.log("/////");

@@ -5,11 +5,12 @@ import { Button } from "../ui/button"
 import { WandSparkles } from "lucide-react";
 import Accounts from "./Accounts";
 import PostPage from "./posts/PostPage";
+import GeneratePost from "./generatepost/GeneratePost";
 
 const Dashboard = () => {
     const [selected, setSelected] = useState("accounts");
   return (
-    <div className="w-[75%] mx-auto mt-10 mb-20 min-h-screen">
+    <div className="lg:w-[75%] w-[95%] mx-auto mt-10 mb-20 min-h-screen">
         <div className="flex rounded-lg gap-2 ">
             <Button className={`${selected=="accounts" ? 'bg-pink-600' : 'bg-none'} hover:bg-pink-700 cursor-pointer`} size={"default"} onClick={() => setSelected("accounts")} >
                Accounts
@@ -42,5 +43,7 @@ const ShowPage = ({value} : {
          return <Accounts />
       case "posts" : 
          return <PostPage />
+      case "generatepost" :
+         return <GeneratePost />
    }
 }

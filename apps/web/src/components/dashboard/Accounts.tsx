@@ -51,7 +51,7 @@ const Accounts = () => {
   return (
     <div className="text-white mt-10">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Connected Accounts</h2>
+        <h2 className="text-3xl font-bold font-serif">Connected Accounts</h2>
 
         <Button className="font-semibold hover:bg-pink-600 cursor-pointer" onClick={handleConnect}>
           Connect new Account
@@ -85,7 +85,7 @@ const Accounts = () => {
                 ))
             ) : (
                 <div className="p-10 flex justify-center items-center">
-                    <p className="text-lg font-bold text-center">No accounts connected</p>
+                    <p className="text-lg font-bold text-center font-serif">No accounts connected</p>
                 </div>
             )
         }

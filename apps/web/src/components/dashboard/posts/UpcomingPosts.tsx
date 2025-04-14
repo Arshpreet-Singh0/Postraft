@@ -41,7 +41,7 @@ const UpcomingPosts = () => {
   return (
     <div className="mt-10 rounded-lg text-white p-5">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Upcoming Posts </h2>
+        <h2 className="text-3xl font-bold font-serif">Upcoming Posts </h2>
       </div>
 
       <div>
@@ -82,7 +82,7 @@ const UpcomingPosts = () => {
           ))
         ) : (
           <div className="p-10 flex justify-center items-center">
-            <p className="text-lg font-bold text-center">No pending posts.</p>
+            <p className="text-lg font-bold text-center font-serif">No pending posts.</p>
           </div>
         )}
       </div>

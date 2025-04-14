@@ -41,7 +41,7 @@ const PublishedPosts = () => {
   return (
     <div className="mt-10 rounded-lg text-white p-5">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold">Published Posts through PostRaft</h2>
+        <h2 className="text-3xl font-bold font-serif">Published Posts through PostRaft</h2>
       </div>
 
       <div>

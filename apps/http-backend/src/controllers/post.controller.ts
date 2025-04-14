@@ -204,3 +204,41 @@ export const deleteScheduledPost = async(req : Request, res : Response, next : N
     next(error);
   }
 }
+
+export const editPost = async(req : Request, res : Response, next : NextFunction) : Promise<void> =>{
+  try {
+    const {id} = req.params;
+    const {content, scheduledTime} = req.body;
+
+    const updatedPost = await prisma.scheduledPost.update({
+      where : {
+        id : Number(id),
+      },
+      data : {
+        content,
+        scheduledTime
+      },
+      include : {
+        TwitterAccount : {
+          select : {
+            name : true,
+            username : true
+          }
+        }
+      },
+    });
+
+    if(!updatedPost){
+      throw new ExpressError( "Requested method not allowed",400);
+    }
+
+
+    res.status(200).json({
+      success : true,
+      message : "Scheduled post updated successfully.",
+      post : updatedPost
+    })
+  } catch (error) {
+    next(error);
+  }
+}

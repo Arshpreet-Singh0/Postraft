@@ -1,41 +1,51 @@
 "use client";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import axiosInstance from "@/config/axios";
 import { Post } from "@/types/types";
 import { handleAxiosError } from "@/utils/handleAxiosError";
 import { useAuth } from "@clerk/nextjs";
 import { EllipsisVertical } from "lucide-react";
 import { toast } from "sonner";
+import EditPostModel from "./EditModel";
+import { useState } from "react";
 
-const Options = ({setPosts, id} : {setPosts : React.Dispatch<React.SetStateAction<Post[]>>, id:string}) => {
-    const {getToken} = useAuth()
-;
-    const handleDeleteScheduledPost = async()=>{
-        try {
-          const token = await getToken();
-          const res = await axiosInstance.delete(`/twitter/post/${id}`,{
-            headers : {
-              Authorization : `Bearer ${token}`
-            }
-          });
-          if(res?.data?.success){
-              setPosts((p)=>{
-                return p.filter((post) => post.id !== res.data.post?.id);
-              });
+const Options = ({
+  post,
+  setPosts,
+  id,
+}: {
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  id: string;
+  post: Post;
+}) => {
+  const [open, setOpen] = useState(false);
+  const { getToken } = useAuth();
+  const handleDeleteScheduledPost = async () => {
+    try {
+      const token = await getToken();
+      const res = await axiosInstance.delete(`/twitter/post/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res?.data?.success) {
+        setPosts((p) => {
+          return p.filter((post) => post.id !== res.data.post?.id);
+        });
 
-              toast.success(res?.data?.message);
-          }
-        } catch (error) {
-          console.log(error);
-          
-          handleAxiosError(error);
-        }
+        toast.success(res?.data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+
+      handleAxiosError(error);
     }
+  };
   return (
     <div className="flex-1 flex justify-end">
       <DropdownMenu>
@@ -46,10 +56,10 @@ const Options = ({setPosts, id} : {setPosts : React.Dispatch<React.SetStateActio
         </DropdownMenuTrigger>
 
         <DropdownMenuContent className="w-40 bg-black text-white" align="start">
-          <DropdownMenuItem onClick={() => console.log("Edit clicked")} >
+          <DropdownMenuItem onClick={() => setOpen(true)}>
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => console.log("View clicked")}>
+          <DropdownMenuItem onClick={() => console.log("Edit clicked")}>
             View
           </DropdownMenuItem>
           <DropdownMenuItem
@@ -60,8 +70,17 @@ const Options = ({setPosts, id} : {setPosts : React.Dispatch<React.SetStateActio
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <EditPostModel
+        postId={post.id}
+        username={post?.TwitterAccount?.username}
+        content={post.content}
+        scheduledTime={post?.scheduledTime?.toLocaleString()}
+        open={open}
+        setOpen={setOpen}
+        setPosts={setPosts}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default Options
+export default Options;

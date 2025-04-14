@@ -76,7 +76,7 @@ const UpcomingPosts = () => {
               </div>
 
               <div className="flex-1 flex justify-end">
-                <Options setPosts={setPosts} id={post.id}/>
+                <Options setPosts={setPosts} id={post.id} post={post}/>
               </div>
             </div>
           ))

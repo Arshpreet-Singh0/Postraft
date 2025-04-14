@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { authMiddleware } from "../middlewares/isAuthenticated";
-import { deleteScheduledPost, getPublishedPosts, getUserScheduledPosts, postTweet, schedulePost } from "../controllers/post.controller";
+import { deleteScheduledPost, editPost, getPublishedPosts, getUserScheduledPosts, postTweet, schedulePost } from "../controllers/post.controller";
 
 const router : Router = express.Router();
 
@@ -13,6 +13,8 @@ router.route('/twitter/upcoming').get(authMiddleware, getUserScheduledPosts);
 router.route('/twitter/published').get(authMiddleware, getPublishedPosts);
 
 router.route('/twitter/post/:id').delete(authMiddleware, deleteScheduledPost);
+
+router.route('/twitter/post/:id').put(authMiddleware, editPost);
 
 
 export default router;

@@ -33,9 +33,9 @@ const GeneratePost = () => {
   const handleGenerate = async () => {
     if (!input.trim()) return;
 
-    const history = messages.map((msg) => ({
+    const history = messages.map((msg, idx) => ({
       role: msg.sender === "User" ? "user" : "model",
-      parts: [msg.text],
+      parts: [{text : msg.text}],
     }));
 
     console.log(history);
@@ -86,16 +86,16 @@ const GeneratePost = () => {
     localStorage.setItem("chats", JSON.stringify(messages));
   }, [messages]);
 
-  useEffect(() => {
-    if (messages.length == 0) {
-      setMessages([
-        {
-          sender: "Ai",
-          text: "👋 Hi! I’m your AI-powered Post Generator. Tell me what you want to post about, and I’ll create a compelling social media post for you!",
-        },
-      ]);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (messages.length == 0) {
+  //     setMessages([
+  //       {
+  //         sender: "Ai",
+  //         text: "👋 Hi! I’m your AI-powered Post Generator. Tell me what you want to post about, and I’ll create a compelling social media post for you!",
+  //       },
+  //     ]);
+  //   }
+  // }, []);
 
   // Auto-scroll to bottom
   useEffect(() => {

@@ -28,9 +28,19 @@ export const generatePost = async (req: Request, res: Response, next: NextFuncti
       const { input, history = [] } = req.body;
   
       const model = genAI.getGenerativeModel({ model: 'models/gemini-2.5-pro-exp-03-25' });
+
+      const newHistory = [
+        {
+         role : "user",
+         parts : [
+          {text : instruction}
+         ] 
+        },
+        ...history
+      ]
       
       const chat = model.startChat({
-        history
+        history : newHistory
       });
       
       const result = await chat.sendMessage(input);

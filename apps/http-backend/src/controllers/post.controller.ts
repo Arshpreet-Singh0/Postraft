@@ -80,6 +80,7 @@ async function refreshTwitterToken(refreshToken: string, clerkUserId: string) {
     );
 
     const { access_token, refresh_token, expires_in } = response.data;
+    const currentDate = new Date();
 
     // 🔄 Update DB
     await prisma.twitterAccount.updateMany({
@@ -87,7 +88,7 @@ async function refreshTwitterToken(refreshToken: string, clerkUserId: string) {
       data: {
         accessToken: access_token,
         refreshToken: refresh_token,
-        expiresAt: expires_in,
+        accessTokenExpiresAt : new Date(currentDate.getTime() + expires_in * 1000),
       },
     });
 

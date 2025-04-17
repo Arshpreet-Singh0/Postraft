@@ -71,18 +71,12 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
       return;
     }
 
-    console.log("state : ",state.trim());
-    
-
     // 1. Retrieve session from DB
     const session = await prisma.twitterAuthSession.findUnique({
       where: { clerkUserId : state.trim() }
     });
 
     console.log(session);
-    
-
-    
     
     if (!session || new Date(session.expiresAt) < new Date()) {
       res.status(400).json({ message: "Invalid or expired session" });
@@ -136,6 +130,9 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
     
 
     const {name, username, id} = userInfo.data.data;
+    const currentDate = new Date();
+    const after5Months = new Date(currentDate);
+    after5Months.setMonth(after5Months.getMonth() + 5);
 
     await prisma.twitterAccount.upsert({
       where: {
@@ -147,7 +144,8 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
         name,
         accessToken: access_token,
         refreshToken: refresh_token,
-        expiresAt: expires_in,
+        accessTokenExpiresAt : new Date(currentDate.getTime() + expires_in * 1000),
+        refreshTokenExpiresAt : after5Months
       },
       create: {
         clerkUserId: state,
@@ -155,8 +153,8 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
         username,
         name,
         accessToken: access_token,
-        refreshToken: refresh_token,
-        expiresAt: expires_in,
+        accessTokenExpiresAt : new Date(currentDate.getTime() + expires_in * 1000),
+        refreshTokenExpiresAt : after5Months
       },
     });
 
@@ -164,7 +162,7 @@ export const twitterCallback = async (req: Request, res: Response, next: NextFun
 
     console.log("✅ Twitter User:", twitterUser);
 
-    res.redirect("http://localhost:3000");
+    res.redirect("http://localhost:3000/dashboard");
   } catch (error: any) {
     console.error("Twitter callback error:", error.response?.data || error.message);
     res.status(500).send("Twitter callback failed");
@@ -181,7 +179,7 @@ export const getUserLinkedAccounts = async (req: Request, res: Response, next: N
         name : true,
         username : true,
         twitterId : true,
-        expiresAt : true
+        refreshTokenExpiresAt : true
       }
     })
 

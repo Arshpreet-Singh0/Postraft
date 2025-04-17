@@ -21,16 +21,27 @@ export const postToTwitter = async (
       return false;
     }
 
-    const postSuccess = await tryPostTweet(text, twitterAccount.accessToken);
+    let postSuccess = false;
+
+    const isTokenExpired =
+      new Date(twitterAccount.accessTokenExpiresAt).getTime() < Date.now();
+
+    if (!isTokenExpired) {
+      postSuccess = await tryPostTweet(text, twitterAccount.accessToken);
+    }
 
     if (postSuccess) {
       await markPostAsPublished(postId);
       return true;
     }
 
-    // Handle expired/invalid token case
+    // If token expired or post failed, try refreshing token
     if (twitterAccount.refreshToken) {
-      const newAccessToken = await refreshTwitterToken(twitterAccount.refreshToken, clerkId);
+      const newAccessToken = await refreshTwitterToken(
+        twitterAccount.refreshToken,
+        clerkId
+      );
+
       const retrySuccess = await tryPostTweet(text, newAccessToken);
 
       if (retrySuccess) {
@@ -39,6 +50,8 @@ export const postToTwitter = async (
       }
     }
 
+    await markPostAsFailed(postId);
+
     return false;
   } catch (error) {
     console.error("❌ Failed to post tweet:", error);
@@ -46,6 +59,9 @@ export const postToTwitter = async (
   }
 };
 
+/**
+ * Tries to post a tweet using the provided access token.
+ */
 const tryPostTweet = async (text: string, accessToken: string): Promise<boolean> => {
   try {
     await axios.post(
@@ -61,7 +77,7 @@ const tryPostTweet = async (text: string, accessToken: string): Promise<boolean>
     return true;
   } catch (error: any) {
     if (error.response?.status === 401) {
-      console.warn("🔁 Access token might be expired.");
+      console.warn("🔁 Access token might be expired or invalid.");
       return false;
     }
     console.error("❌ Twitter post error:", error.response?.data || error.message);
@@ -69,6 +85,9 @@ const tryPostTweet = async (text: string, accessToken: string): Promise<boolean>
   }
 };
 
+/**
+ * Marks the post as published in the DB.
+ */
 const markPostAsPublished = async (postId: number) => {
   await prisma.scheduledPost.update({
     where: { id: postId },
@@ -79,7 +98,10 @@ const markPostAsPublished = async (postId: number) => {
 /**
  * Refreshes Twitter OAuth2 token and updates it in the DB.
  */
-const refreshTwitterToken = async (refreshToken: string, clerkUserId: string): Promise<string> => {
+const refreshTwitterToken = async (
+  refreshToken: string,
+  clerkUserId: string
+): Promise<string> => {
   try {
     const response = await axios.post(
       "https://api.twitter.com/2/oauth2/token",
@@ -97,12 +119,14 @@ const refreshTwitterToken = async (refreshToken: string, clerkUserId: string): P
 
     const { access_token, refresh_token, expires_in } = response.data;
 
+    const accessTokenExpiresAt = new Date(Date.now() + expires_in * 1000);
+
     await prisma.twitterAccount.updateMany({
       where: { clerkUserId },
       data: {
         accessToken: access_token,
         refreshToken: refresh_token,
-        expiresAt: expires_in,
+        accessTokenExpiresAt,
       },
     });
 
@@ -112,4 +136,11 @@ const refreshTwitterToken = async (refreshToken: string, clerkUserId: string): P
     console.error("❌ Token refresh failed:", err.response?.data || err.message);
     throw new Error("Refresh token expired or invalid. Re-authentication required.");
   }
+};
+
+const markPostAsFailed = async (postId: number) => {
+  await prisma.scheduledPost.update({
+    where: { id: postId },
+    data: { status: "failed" },
+  });
 };

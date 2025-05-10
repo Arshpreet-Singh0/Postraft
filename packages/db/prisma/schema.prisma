@@ -29,20 +29,20 @@ model User {
 }
 
 model TwitterAccount {
-  id                    String   @default(cuid())
-  twitterId             String   @id @unique
+  id                    String   @id @default(cuid())
+  twitterId             String
   username              String
   name                  String?
   profileImage          String?
   accessToken           String
   refreshToken          String?
-  accessTokenExpiresAt  DateTime  @default(now())
+  accessTokenExpiresAt  DateTime @default(now())
   refreshTokenExpiresAt DateTime @default(now())
 
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  User                  User?    @relation(fields: [clerkUserId], references: [clerkUserId])
-  clerkUserId           String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  User        User?    @relation(fields: [clerkUserId], references: [clerkUserId])
+  clerkUserId String   @unique
 
   scheduledPosts ScheduledPost[]
 }
@@ -67,5 +67,5 @@ model ScheduledPost {
   clerkUserId      String
   twitterAccountId String
 
-  TwitterAccount TwitterAccount @relation(fields: [twitterAccountId], references: [twitterId])
+  TwitterAccount TwitterAccount @relation(fields: [twitterAccountId], references: [id])
 }

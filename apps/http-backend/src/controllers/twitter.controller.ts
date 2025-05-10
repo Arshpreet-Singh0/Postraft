@@ -176,6 +176,7 @@ export const getUserLinkedAccounts = async (req: Request, res: Response, next: N
         clerkUserId : req.clerkId,
       },
       select : {
+        id : true,
         name : true,
         username : true,
         twitterId : true,

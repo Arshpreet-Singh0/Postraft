@@ -4,7 +4,6 @@ import { useAuth } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 import { BACKEND_URL } from "@/config/config";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import axiosInstance from "@/config/axios";
 import { Twitter } from "lucide-react";
 import SchedulePostModel from "./SchedulePostModel";
@@ -12,7 +11,7 @@ import { handleAxiosError } from "@/utils/handleAxiosError";
 import Loading from "../Loading";
 
 const Accounts = () => {
-  const [accounts, setAccounts] = useState<{name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
+  const [accounts, setAccounts] = useState<{id : string, name : string, username : string, twitterId : string, expiresAt : number}[]>([]);
   const [loading, setLoading] = useState(true);
   const { getToken } = useAuth();
 
@@ -32,6 +31,8 @@ const Accounts = () => {
             Authorization :  `Bearer ${token}`
           }
         });
+        console.log(res.data);
+        
 
         setAccounts(res?.data);
       } catch (error) {
@@ -78,7 +79,7 @@ const Accounts = () => {
 
                     <div className="">
                         {/* <Button className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">Schedule a post</Button> */}
-                    <SchedulePostModel twitterId={acc.twitterId} username={acc.username}/>
+                    <SchedulePostModel twitterId={acc.id} username={acc.username}/>
                     </div>
 
                     </div>

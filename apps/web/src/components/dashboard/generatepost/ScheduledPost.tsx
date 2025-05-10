@@ -41,7 +41,7 @@ const ScheduleGeneartedPostModel = ({
   const [content, setContent] = useState(initialContent);
   const [time, setTime] = useState("");
   const [accounts, setAccounts] = useState<
-    { name: string; username: string; twitterId: string; expiresAt: number }[]
+    { id : string,name: string; username: string; twitterId: string; expiresAt: number }[]
   >([]);
   const [minDateTime, setMinDateTime] = useState("");
   const { getToken } = useAuth();
@@ -189,7 +189,7 @@ const ScheduleGeneartedPostModel = ({
                 </SelectTrigger>
                 <SelectContent className="bg-black text-white">
                   {accounts.map((acc) => (
-                    <SelectItem key={acc.twitterId} value={acc.twitterId}>
+                    <SelectItem key={acc.twitterId} value={acc.id}>
                       {acc.name} (@{acc.username})
                     </SelectItem>
                   ))}

@@ -13,7 +13,7 @@ export const postToTwitter = async (
 ): Promise<boolean> => {
   try {
     const twitterAccount = await prisma.twitterAccount.findFirst({
-      where: { clerkUserId: clerkId, twitterId },
+      where: { clerkUserId: clerkId, id: twitterId },
     });
 
     if (!twitterAccount) {

@@ -11,13 +11,13 @@ export default function Navbar() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="fixed top-0 z-50 w-full bg-black"
+      className="z-50 w-full bg-black"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
-        className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 backdrop-blur-xl rounded-2xl mt-2 bg-background/10 border border-neutral-300 dark:border-neutral-900 shadow-lg"
+        className="mx-auto md:max-w-6xl    px-4 sm:px-6 lg:px-8 backdrop-blur-xl rounded-2xl mt-5 bg-background/10 border border-neutral-300 dark:border-neutral-900 shadow-lg"
       >
         <div className="flex h-16 items-center justify-between text-white">
           {/* Logo */}

@@ -16,6 +16,7 @@ import axiosInstance from "@/config/axios"
 import { useAuth } from "@clerk/nextjs"
 import { handleAxiosError } from "@/utils/handleAxiosError"
 import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 
 const TWITTER_CHAR_LIMIT = 280;
 
@@ -24,6 +25,7 @@ const SchedulePostModel = ({ twitterId, username }: { twitterId: string, usernam
   const [content, setContent] = useState("");
   const [time, setTime] = useState("");
   const [minDateTime, setMinDateTime] = useState("");
+  const [loading, setLoading] = useState(false);
   const {getToken} = useAuth();
 
   // Update minimum date-time whenever dialog opens
@@ -54,6 +56,7 @@ const SchedulePostModel = ({ twitterId, username }: { twitterId: string, usernam
       alert("Please fill in both content and schedule time.");
       return;
     }
+    setLoading(true);
 
     const scheduledTime = new Date(time);
     const now = new Date();
@@ -82,6 +85,8 @@ const SchedulePostModel = ({ twitterId, username }: { twitterId: string, usernam
         }
     } catch (error) {
         handleAxiosError(error);
+    }finally{
+        setLoading(false);
     }
   };
 
@@ -141,8 +146,8 @@ const SchedulePostModel = ({ twitterId, username }: { twitterId: string, usernam
           </div>
         </div>
         <DialogFooter>
-          <Button type="button" onClick={handleSave} className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer">
-            Schedule Post
+          <Button type="button" onClick={handleSave} className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 cursor-pointer flex justify-center items-center" disabled={loading}>
+            {loading && <Loader2 className="animate-spin mr-2" size={18}/>} Schedule Post
           </Button>
         </DialogFooter>
       </DialogContent>

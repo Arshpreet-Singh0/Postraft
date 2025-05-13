@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react";
 
 const TWITTER_CHAR_LIMIT = 280;
 
@@ -121,6 +122,7 @@ const ScheduleGeneartedPostModel = ({
     }
 
     try {
+      setLoading(true);
       const token = await getToken();
       const res = await axiosInstance.post(
         `/twitter/schedule`,
@@ -143,6 +145,8 @@ const ScheduleGeneartedPostModel = ({
       }
     } catch (error) {
       handleAxiosError(error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -217,8 +221,9 @@ const ScheduleGeneartedPostModel = ({
             type="button"
             onClick={handlePost}
             className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white"
+            disabled={loading || !selectedAccountId}
           >
-           Schedule Post
+           {loading && <Loader2 className="animate-spin mr-2" size={18}/>} Schedule Post
           </Button>
         </DialogFooter>
       </DialogContent>

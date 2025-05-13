@@ -16,8 +16,6 @@ export const postToTwitter = async (
       where: { clerkUserId: clerkId, id: twitterId },
     });
 
-    
-
     if (!twitterAccount) {
       console.warn("❌ Twitter account not found for user:", clerkId);
       return false;
@@ -64,7 +62,10 @@ export const postToTwitter = async (
 /**
  * Tries to post a tweet using the provided access token.
  */
-const tryPostTweet = async (text: string, accessToken: string): Promise<boolean> => {
+const tryPostTweet = async (
+  text: string,
+  accessToken: string
+): Promise<boolean> => {
   try {
     await axios.post(
       "https://api.twitter.com/2/tweets",
@@ -82,7 +83,10 @@ const tryPostTweet = async (text: string, accessToken: string): Promise<boolean>
       console.warn("🔁 Access token might be expired or invalid.");
       return false;
     }
-    console.error("❌ Twitter post error:", error.response?.data || error.message);
+    console.error(
+      "❌ Twitter post error:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
@@ -105,6 +109,9 @@ const refreshTwitterToken = async (
   clerkUserId: string
 ): Promise<string> => {
   try {
+    console.log("🔁 Refreshing Twitter access token... ", refreshToken);
+    console.log("Using client_id:", process.env.TWITTER_CLIENT_ID);
+    console.log("Using client_secret:", process.env.TWITTER_CLIENT_SECRET);
     const response = await axios.post(
       "https://api.twitter.com/2/oauth2/token",
       qs.stringify({
@@ -115,6 +122,11 @@ const refreshTwitterToken = async (
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization:
+            "Basic " +
+            Buffer.from(
+              `${process.env.TWITTER_CLIENT_ID}:${process.env.TWITTER_CLIENT_SECRET}`
+            ).toString("base64"),
         },
       }
     );
@@ -135,8 +147,13 @@ const refreshTwitterToken = async (
     console.log("🔁 Twitter access token refreshed.");
     return access_token;
   } catch (err: any) {
-    console.error("❌ Token refresh failed:", err.response?.data || err.message);
-    throw new Error("Refresh token expired or invalid. Re-authentication required.");
+    console.error(
+      "❌ Token refresh failed:",
+      err.response?.data || err.message
+    );
+    throw new Error(
+      "Refresh token expired or invalid. Re-authentication required."
+    );
   }
 };
 

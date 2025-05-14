@@ -48,6 +48,9 @@ export const generatePost = async (req: Request, res: Response, next: NextFuncti
 
       const responseText = candidate?.content?.parts?.[0]?.text;
 
+      console.log(responseText);
+      
+
       res.status(200).json(responseText);
   
     } catch (error) {

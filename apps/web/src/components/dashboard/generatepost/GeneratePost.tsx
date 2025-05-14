@@ -23,6 +23,7 @@ const GeneratePost = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [content, setContent] = useState("");
 
   const [messages, setMessages] = useState<Message[]>(
     JSON.parse(localStorage.getItem("chats") || "[]") || []
@@ -168,7 +169,10 @@ const GeneratePost = () => {
                               className="w-40 bg-black text-white"
                               align="start"
                             >
-                              <DropdownMenuItem onClick={() => setOpen(true)}>
+                              <DropdownMenuItem onClick={() => {
+                                setOpen(true);
+                                setContent(msg.text);
+                              }}>
                                 Schedule this post
                               </DropdownMenuItem>
                               <DropdownMenuItem
@@ -186,13 +190,15 @@ const GeneratePost = () => {
                           </DropdownMenu>
                         </div>
 
-                        <ScheduleGeneartedPostModel open={open} setOpen={setOpen} content={msg.text} />
+                       
                       </div>
                     )}
                   </div>
                 </div>
               ))
             )}
+
+             {open && <ScheduleGeneartedPostModel open={open} setOpen={setOpen} content={content} />}
 
             {loading && (
               <div className="bg-white/10 p-3 rounded-lg w-full animate-pulse text-sm">

@@ -39,6 +39,7 @@ const ScheduleGeneartedPostModel = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   content: string;
 }) => {
+  
   const [content, setContent] = useState(initialContent);
   const [time, setTime] = useState("");
   const [accounts, setAccounts] = useState<

@@ -11,7 +11,7 @@ export const startPostScheduler = () => {
           scheduledTime: {
             lte: now,
           },
-          // status: "pending",
+          status: "pending",
         },
       });
 

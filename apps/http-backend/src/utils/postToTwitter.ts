@@ -55,6 +55,7 @@ export const postToTwitter = async (
     return false;
   } catch (error) {
     console.error("❌ Failed to post tweet:", error);
+    await markPostAsFailed(postId);
     return false;
   }
 };

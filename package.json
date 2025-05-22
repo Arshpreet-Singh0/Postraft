@@ -9,7 +9,7 @@
     "check-types": "turbo run check-types",
     "db:generate": "cd packages/db && npx prisma generate",
     "backend:build" : "cd apps/http-backend && pnpm build",
-    "backend:start" : "cd apps/http-backend && pnpm build"
+    "backend:start" : "cd apps/http-backend && pnpm start"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
